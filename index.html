@@ -110,6 +110,7 @@ function renderVer(){
  });
 }
 
+
 function cambiar(vista){
  if(vista==='tomar'){
   document.getElementById('tomar').style.display='block';
@@ -122,9 +123,55 @@ function cambiar(vista){
   document.getElementById('ver').style.display='block';
   document.getElementById('btnTomar').className='inactivo';
   document.getElementById('btnVer').className='activo';
-  renderVer();
+  
+  renderVer(); // 👈 importante
  }
 }
+
+
+
+function renderVer(){
+ const cont=document.getElementById('ver');
+ cont.innerHTML='';
+
+ const pedidos=JSON.parse(localStorage.getItem('pedidos')||'[]');
+
+ if(pedidos.length===0){
+   cont.innerHTML = "<p style='text-align:center'>No hay pedidos</p>";
+   return;
+ }
+
+ // 🔴 BOTÓN BORRAR TODO
+ const btnBorrar=document.createElement('button');
+ btnBorrar.className='btn-guardar';
+ btnBorrar.style.background='#ef4444';
+ btnBorrar.innerText='Borrar todos los pedidos';
+ btnBorrar.onclick=borrarPedidos;
+ cont.appendChild(btnBorrar);
+
+ pedidos.forEach((ped,i)=>{
+  const card=document.createElement('div');
+  card.className='card';
+
+  let html=`<b>Pedido ${i+1}</b><br>`;
+  ped.forEach(p=>{
+    html+=`${p.nombre} x ${p.cantidad}<br>`;
+  });
+
+  card.innerHTML=html;
+  cont.appendChild(card);
+ });
+}
+
+
+function borrarPedidos(){
+ if(confirm("¿Borrar todos los pedidos?")){
+   localStorage.removeItem('pedidos');
+   renderVer();
+ }
+}
+
+
 
 renderTomar();
 </script>
